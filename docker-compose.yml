@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  web:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ./app.py:/app/app.py
+    ports:
+      - "${APP_PORT}:3000"
+    command: python app.py
+    depends_on:
+      - db
